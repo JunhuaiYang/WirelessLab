@@ -73,8 +73,8 @@ event void AMSend.sendDone(message_t* msg, error_t error) {
 
 event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
     if (len == sizeof(BlinkToRadioMsg)) {
-    BlinkToRadioMsg* btrpkt = (BlinkToRadioMsg*)payload;
-    call Leds.set(btrpkt->counter);
+        BlinkToRadioMsg* btrpkt = (BlinkToRadioMsg*)payload;
+        call Leds.set(btrpkt->counter);
     }
     return msg;
 }
