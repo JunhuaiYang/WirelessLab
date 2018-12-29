@@ -72,6 +72,7 @@ implementation {
 // 无线收到数据
   event message_t* RadioReceive.receive(message_t* msg, void* payload, uint8_t len)
   {
+      call Leds.led2Toggle();
     if (len == sizeof(BlinkToRadioMsg)) {
       BlinkToRadioMsg* btrpkt = (BlinkToRadioMsg*)payload;
       // led2 亮
@@ -83,7 +84,7 @@ implementation {
       }
       else {
         test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&pkt, sizeof(test_serial_msg_t));
-        if (rcm == NULL) {return;}
+        if (rcm == NULL) {return NULL;}
         if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
           return NULL;
         }
@@ -98,7 +99,9 @@ implementation {
 
   // 串口收到数据
     event message_t* SerialReceive.receive(message_t* bufPtr, 
-				   void* payload, uint8_t len) {
+				   void* payload, uint8_t len) 
+    {
+        call Leds.led0Toggle();
     if (len != sizeof(test_serial_msg_t)) {return bufPtr;}
     else
     {
@@ -112,7 +115,7 @@ implementation {
         BlinkToRadioMsg* btrpkt = 
       (BlinkToRadioMsg*)(call RadioPacket.getPayload(&pkt, sizeof(BlinkToRadioMsg)));
         if (btrpkt == NULL) {
-          return;
+          return NULL;
         }
         btrpkt->nodeid = TOS_NODE_ID;
         btrpkt->counter = rcm->counter;

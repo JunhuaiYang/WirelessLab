@@ -1,4 +1,4 @@
-COMPONENT=RadioAndSerialAppC
+COMPONENT=BlinkToRadioAppC
 PFLAGS+=-DCC2420_DEF_CHANNEL=9
 include $(MAKERULES)
 

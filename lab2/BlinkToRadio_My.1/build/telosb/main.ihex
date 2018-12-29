@@ -1,15 +1,3 @@
-<tos_image>
-  <ident>
-    <appname>BlinkToRadioApp</appname>
-    <deluge_support>no</deluge_support>
-    <userhash>AA977DFFL</userhash>
-    <hostname>junhuai</hostname>
-    <platform>telosb</platform>
-    <uidhash>CA128E6BL</uidhash>
-    <timestamp>5C2705D3L</timestamp>
-    <username>yjh</username>
-  </ident>
-  <image format="ihex">
 :104000005542200135D0085A8245641231400039AA
 :104010003F4012000F9308249242641220012F8324
 :104020009F4FE26B0011F8233F4052010F9307248A
@@ -719,5 +707,3 @@
 :10FFF0001A69BE6810451045F866DA66104500407B
 :0400000300004000B9
 :00000001FF
-  </image>
-</tos_image>
