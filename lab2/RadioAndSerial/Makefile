@@ -1,6 +1,7 @@
 COMPONENT=RadioAndSerialAppC
 BUILD_EXTRA_DEPS += RadioAndSerial.class
 CLEAN_EXTRA = *.class RadioAndSerialMsg.java
+PFLAGS+=-DCC2420_DEF_CHANNEL=9
 
 CFLAGS += -I$(TOSDIR)/lib/T2Hack
 

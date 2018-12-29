@@ -64,7 +64,7 @@ implementation {
 
 // 串口发送完成
   event void SerialAMSend.sendDone(message_t* bufPtr, error_t error) {
-    if (&packet == bufPtr) {
+    if (&pkt == bufPtr) {
       locked = FALSE;
     }
   }
@@ -79,16 +79,16 @@ implementation {
 
       // 转发到串口
       if (locked) {
-        return;
+        return NULL;
       }
       else {
-        test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&packet, sizeof(test_serial_msg_t));
+        test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&pkt, sizeof(test_serial_msg_t));
         if (rcm == NULL) {return;}
         if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
-          return;
+          return NULL;
         }
         rcm->counter = btrpkt->counter;
-        if (call WL_AMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(test_serial_msg_t)) == SUCCESS) {
+        if (call RadioAMSend.send(AM_BROADCAST_ADDR, &pkt, sizeof(test_serial_msg_t)) == SUCCESS) {
           locked = TRUE;
         }
       }
@@ -116,7 +116,7 @@ implementation {
         }
         btrpkt->nodeid = TOS_NODE_ID;
         btrpkt->counter = rcm->counter;
-        if (call WL_AMSend.send(AM_BROADCAST_ADDR, 
+        if (call RadioAMSend.send(AM_BROADCAST_ADDR, 
             &pkt, sizeof(BlinkToRadioMsg)) == SUCCESS) 
         {
           busy = TRUE;

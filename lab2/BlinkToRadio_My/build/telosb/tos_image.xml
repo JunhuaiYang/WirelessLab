@@ -1,13 +1,13 @@
 <tos_image>
   <ident>
-    <deluge_support>no</deluge_support>
-    <platform>telosb</platform>
-    <userhash>AA977DFFL</userhash>
-    <appname>BlinkToRadioApp</appname>
-    <timestamp>5C26C958L</timestamp>
+    <uidhash>83D8A263L</uidhash>
     <username>yjh</username>
-    <uidhash>C81698C3L</uidhash>
     <hostname>junhuai</hostname>
+    <timestamp>5C26E516L</timestamp>
+    <deluge_support>no</deluge_support>
+    <userhash>AA977DFFL</userhash>
+    <platform>telosb</platform>
+    <appname>BlinkToRadioApp</appname>
   </ident>
   <image format="ihex">
 :104000005542200135D0085A8245641231400039AA
