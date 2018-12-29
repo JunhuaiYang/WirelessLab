@@ -18,6 +18,10 @@ typedef nx_struct BlinkToRadioMsg {
   nx_uint16_t counter;
 } BlinkToRadioMsg;
 
+typedef nx_struct test_serial_msg {
+  nx_uint16_t counter;
+} test_serial_msg_t;
+
 #endif // __RADIOANDSERIAL_h__
 
 
