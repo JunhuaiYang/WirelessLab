@@ -15,6 +15,14 @@ typedef nx_struct BlinkToRadioMsg
 }
 BlinkToRadioMsg;
 
+typedef nx_struct test_serial_msg {
+  nx_uint16_t counter;
+} test_serial_msg_t;
+
+enum {
+  AM_TEST_SERIAL_MSG = 0x89,
+};
+
 enum {
 AM_POINTTOPOINT = 6,
 TIMER_PERIOD_MILLI = 1000,

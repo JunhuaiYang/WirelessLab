@@ -52,7 +52,8 @@ implementation {
     }
   }
 
-  event void SerialControl.stopDone(error_t err) {}
+  event void SerialControl.stopDone(error_t err) {
+  }
 
 
 // 无线发送完成
@@ -65,32 +66,35 @@ implementation {
 // 串口发送完成
   event void SerialAMSend.sendDone(message_t* bufPtr, error_t error) {
     if (&pkt == bufPtr) {
-      locked = FALSE;
+        call Leds.led1Toggle();
+        locked = FALSE;
     }
   }
 
 // 无线收到数据
   event message_t* RadioReceive.receive(message_t* msg, void* payload, uint8_t len)
   {
-      call Leds.led2Toggle();
     if (len == sizeof(BlinkToRadioMsg)) {
       BlinkToRadioMsg* btrpkt = (BlinkToRadioMsg*)payload;
       // led2 亮
-      call Leds.led2Toggle();
+    call Leds.led2Toggle();
 
       // 转发到串口
-      if (locked) {
+      if (0) {
         return NULL;
       }
-      else {
+      else 
+      {
+
         test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&pkt, sizeof(test_serial_msg_t));
         if (rcm == NULL) {return NULL;}
         if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
-          return NULL;
+            return NULL;
         }
         rcm->counter = btrpkt->counter;
         if (call RadioAMSend.send(AM_BROADCAST_ADDR, &pkt, sizeof(test_serial_msg_t)) == SUCCESS) {
-          locked = TRUE;
+            // call Leds.led1Toggle();
+            locked = TRUE;
         }
       }
     }
@@ -98,33 +102,32 @@ implementation {
   }
 
   // 串口收到数据
-    event message_t* SerialReceive.receive(message_t* bufPtr, 
-				   void* payload, uint8_t len) 
+    event message_t* SerialReceive.receive(message_t* bufPtr, void* payload, uint8_t len) 
     {
-        call Leds.led0Toggle();
-    if (len != sizeof(test_serial_msg_t)) {return bufPtr;}
-    else
-    {
-      test_serial_msg_t* rcm = (test_serial_msg_t*)payload;
-      // led0 亮
-      call Leds.led0Toggle();
-
-      // 转发到无线
-      if (!busy) 
-      {
-        BlinkToRadioMsg* btrpkt = 
-      (BlinkToRadioMsg*)(call RadioPacket.getPayload(&pkt, sizeof(BlinkToRadioMsg)));
-        if (btrpkt == NULL) {
-          return NULL;
-        }
-        btrpkt->nodeid = TOS_NODE_ID;
-        btrpkt->counter = rcm->counter;
-        if (call RadioAMSend.send(AM_BROADCAST_ADDR, 
-            &pkt, sizeof(BlinkToRadioMsg)) == SUCCESS) 
+        if (len != sizeof(test_serial_msg_t)) 
+        {return bufPtr;}
+        else
         {
-          busy = TRUE;
+        test_serial_msg_t* rcm = (test_serial_msg_t*)payload;
+        // led0 亮
+        call Leds.led0Toggle();
+
+        // 转发到无线
+        if (!busy) 
+        {
+            BlinkToRadioMsg* btrpkt = 
+            (BlinkToRadioMsg*)(call RadioPacket.getPayload(&pkt, sizeof(BlinkToRadioMsg)));
+            if (btrpkt == NULL)
+            {
+                return NULL;
+            }
+            btrpkt->nodeid = TOS_NODE_ID;
+            btrpkt->counter = rcm->counter;
+            if (call RadioAMSend.send(AM_BROADCAST_ADDR, &pkt, sizeof(BlinkToRadioMsg)) == SUCCESS) 
+            {
+                busy = TRUE;
+            }
         }
-      }
 
 
       return bufPtr;

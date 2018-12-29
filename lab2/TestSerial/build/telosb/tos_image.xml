@@ -1,13 +1,13 @@
 <tos_image>
   <ident>
-    <userhash>AA977DFFL</userhash>
-    <platform>telosb</platform>
-    <deluge_support>no</deluge_support>
+    <timestamp>5C275163L</timestamp>
     <username>yjh</username>
-    <timestamp>5C26C6F5L</timestamp>
-    <uidhash>A8F6254FL</uidhash>
     <hostname>junhuai</hostname>
     <appname>TestSerialAppC</appname>
+    <userhash>AA977DFFL</userhash>
+    <deluge_support>no</deluge_support>
+    <platform>telosb</platform>
+    <uidhash>8619441CL</uidhash>
   </ident>
   <image format="ihex">
 :104000005542200135D0085A82453E1231400039D0

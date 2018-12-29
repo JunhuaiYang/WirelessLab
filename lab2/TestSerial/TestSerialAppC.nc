@@ -67,11 +67,12 @@ implementation {
   components new TimerMilliC();
 
   App.Boot -> MainC.Boot;
+  App.Leds -> LedsC;
+  App.MilliTimer -> TimerMilliC;
+
   App.Control -> AM;
   App.Receive -> AM.Receive[AM_TEST_SERIAL_MSG];
   App.AMSend -> AM.AMSend[AM_TEST_SERIAL_MSG];
-  App.Leds -> LedsC;
-  App.MilliTimer -> TimerMilliC;
   App.Packet -> AM;
 }
 
