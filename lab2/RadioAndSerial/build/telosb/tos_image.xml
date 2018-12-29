@@ -1,13 +1,13 @@
 <tos_image>
   <ident>
-    <username>yjh</username>
     <deluge_support>no</deluge_support>
-    <timestamp>5C26E4C6L</timestamp>
-    <hostname>junhuai</hostname>
-    <userhash>AA977DFFL</userhash>
-    <uidhash>C595DD93L</uidhash>
-    <platform>telosb</platform>
     <appname>RadioAndSerialA</appname>
+    <uidhash>EB786263L</uidhash>
+    <username>yjh</username>
+    <userhash>AA977DFFL</userhash>
+    <platform>telosb</platform>
+    <timestamp>5C26EEFFL</timestamp>
+    <hostname>junhuai</hostname>
   </ident>
   <image format="ihex">
 :104000005542200135D0085A82453E1331400039CF

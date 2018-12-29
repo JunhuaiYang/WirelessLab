@@ -13,8 +13,9 @@ implementation {
   components new AMReceiverC(AM_BLINKTORADIO);
   components SerialActiveMessageC as AM;
 
-  App.Boot -> MainC;
+  App.Boot -> MainC.Boot;
   App.Leds -> LedsC;
+
   App.RadioPacket -> AMSenderC;
   App.RadioAMPacket -> AMSenderC;
   App.RadioAMControl -> ActiveMessageC;
