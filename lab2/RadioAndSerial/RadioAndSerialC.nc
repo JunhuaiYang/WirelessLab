@@ -17,18 +17,45 @@ module RadioAndSerialC {
   uses interface AMSend   as SerialAMSend;
   uses interface SplitControl as SerialControl;
 
+  // test
+  uses interface Timer<TMilli> as MilliTimer;
 }
 implementation {
 
-  uint16_t counter;
+  message_t packet;
+
+  bool locked = FALSE;
+  uint16_t counter = 0;
+
   message_t pkt;
   bool busy = FALSE;
-  bool locked = FALSE;
+
+  
+  
+  event void MilliTimer.fired() {
+    counter++;
+    if (locked) {
+      return;
+    }
+    else {
+      test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&packet, sizeof(test_serial_msg_t));
+      if (rcm == NULL) {return;}
+      if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
+	return;
+      }
+
+      rcm->counter = counter;
+      if (call SerialAMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(test_serial_msg_t)) == SUCCESS) {
+	locked = TRUE;
+      }
+    }
+  }
 
 
   event void Boot.booted() {
     call RadioAMControl.start();
     call SerialControl.start();
+    // call MilliTimer.startPeriodic(1000);
   }
 
 // 无线
@@ -65,8 +92,8 @@ implementation {
 
 // 串口发送完成
   event void SerialAMSend.sendDone(message_t* bufPtr, error_t error) {
-    if (&pkt == bufPtr) {
         call Leds.led1Toggle();
+    if (&packet == bufPtr) {
         locked = FALSE;
     }
   }
@@ -80,19 +107,22 @@ implementation {
     call Leds.led2Toggle();
 
       // 转发到串口
-      if (0) {
+
+      if (locked) {
         return NULL;
       }
       else 
       {
-
-        test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&pkt, sizeof(test_serial_msg_t));
-        if (rcm == NULL) {return NULL;}
+        test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&packet, sizeof(test_serial_msg_t));
+        if (rcm == NULL) 
+        {  
+          return NULL;
+        }
         if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
             return NULL;
         }
         rcm->counter = btrpkt->counter;
-        if (call RadioAMSend.send(AM_BROADCAST_ADDR, &pkt, sizeof(test_serial_msg_t)) == SUCCESS) {
+        if (call SerialAMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(test_serial_msg_t)) == SUCCESS) {
             // call Leds.led1Toggle();
             locked = TRUE;
         }
@@ -128,7 +158,6 @@ implementation {
                 busy = TRUE;
             }
         }
-
 
       return bufPtr;
     }

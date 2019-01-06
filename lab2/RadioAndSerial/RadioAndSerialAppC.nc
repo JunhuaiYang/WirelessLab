@@ -13,6 +13,10 @@ implementation {
   components new AMReceiverC(AM_BLINKTORADIO);
   components SerialActiveMessageC as AM;
 
+  // 计时器 test
+  components new TimerMilliC();
+  App.MilliTimer -> TimerMilliC;
+
   App.Boot -> MainC.Boot;
   App.Leds -> LedsC;
 
