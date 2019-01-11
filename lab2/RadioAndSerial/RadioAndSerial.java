@@ -104,10 +104,13 @@ public class RadioAndSerial implements MessageListener {
     System.out.println("请输入需要进入的模式：");
     System.out.println("1. 自动发送自增数据");
     System.out.println("2. 手动输入数据发送");
-    if(in.nextInt() == 2)
+    System.out.println("3. 只接收数据");
+
+    int inpu = in.nextInt();
+    if(inpu == 2)
       serial.SendMyPacket();
-    else
-    serial.sendPackets();
+    else if(inpu == 1)
+      serial.sendPackets();
   }
 
 

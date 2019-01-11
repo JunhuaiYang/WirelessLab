@@ -44,14 +44,10 @@ public class RadioAndSerial implements MessageListener {
 			while(true) {
 				System.out.println("请输入需要发送的内容： ");
 				if(in.hasNextInt()){
-					// nodeid = in.nextInt();
-					// if(nodeid == 0) break;	
 					counter = in.nextInt();				
 				}
-				// System.out.println("Sending to " + nodeid + " number is : " + counter);
         System.out.println("Sending packet " + counter);
 				payload.set_counter(counter);
-				// payload.set_nodeid(nodeid);
 				moteIF.send(0, payload);
 				try {
 					Thread.sleep(1000);
