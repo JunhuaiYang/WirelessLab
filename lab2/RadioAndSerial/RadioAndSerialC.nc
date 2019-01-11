@@ -18,7 +18,7 @@ module RadioAndSerialC {
   uses interface SplitControl as SerialControl;
 
   // test
-  uses interface Timer<TMilli> as MilliTimer;
+  // uses interface Timer<TMilli> as MilliTimer;
 }
 implementation {
 
@@ -32,24 +32,24 @@ implementation {
 
   
   
-  event void MilliTimer.fired() {
-    counter++;
-    if (locked) {
-      return;
-    }
-    else {
-      test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&packet, sizeof(test_serial_msg_t));
-      if (rcm == NULL) {return;}
-      if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
-	return;
-      }
+  // event void MilliTimer.fired() {
+  //   counter++;
+  //   if (locked) {
+  //     return;
+  //   }
+  //   else {
+  //     test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&packet, sizeof(test_serial_msg_t));
+  //     if (rcm == NULL) {return;}
+  //     if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
+	// return;
+  //     }
 
-      rcm->counter = counter;
-      if (call SerialAMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(test_serial_msg_t)) == SUCCESS) {
-	locked = TRUE;
-      }
-    }
-  }
+  //     rcm->counter = counter;
+  //     if (call SerialAMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(test_serial_msg_t)) == SUCCESS) {
+	// locked = TRUE;
+  //     }
+  //   }
+  // }
 
 
   event void Boot.booted() {
@@ -92,8 +92,8 @@ implementation {
 
 // 串口发送完成
   event void SerialAMSend.sendDone(message_t* bufPtr, error_t error) {
-        call Leds.led1Toggle();
     if (&packet == bufPtr) {
+        // call Leds.led1Toggle();
         locked = FALSE;
     }
   }
