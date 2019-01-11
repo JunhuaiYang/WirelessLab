@@ -74,6 +74,8 @@ event void Timer0.fired()
         btrpkt->nodeid = TOS_NODE_ID;
         btrpkt->counter = counter;
 
+        // NODE_ID_1 = 1
+        // NODE_ID_2 = 2
         if (call AMSend.send(AM_BROADCAST_ADDR, &pkt,sizeof(BlinkToRadioMsg)) == SUCCESS) {
         busy = TRUE;
         }
