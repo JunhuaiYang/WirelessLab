@@ -107,7 +107,6 @@ implementation {
       BlinkToRadioMsg* btrpkt = (BlinkToRadioMsg*)payload;
       // led2 亮
 
-
       // 转发到串口
       if (locked) {
         return NULL;
