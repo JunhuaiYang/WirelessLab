@@ -39,22 +39,20 @@ public class RadioAndSerial implements MessageListener {
   public void SendIDPacket()
   {
     int counter = 0;
+    int nodeid = 0;
     RadioAndSerialMsg payload = new RadioAndSerialMsg();
 		Scanner in = new Scanner(System.in);
 
   try {
-        while(true) {
           System.out.println("请输入需要发送的目标节点和counter：（如 3 1） ");
           if(in.hasNextInt()){
             nodeid = in.nextInt();
-            if(nodeid == 0) break;	
             counter = in.nextInt();				
           }
           System.out.println("Sending to " + nodeid + " number is : " + counter);
           payload.set_counter(counter);
           payload.set_nodeid(nodeid);
           moteIF.send(0, payload);
-        }
       }catch(IOException exception){
         System.err.println("Exception thrown when sending packets. Exiting.");
             System.err.println(exception);
@@ -101,6 +99,11 @@ public class RadioAndSerial implements MessageListener {
 
 
     serial.SendIDPacket();
+    System.out.println("输入1继续");
+    while(in.hasNextInt())
+    {
+      serial.SendIDPacket();
+    }
   }
 
 

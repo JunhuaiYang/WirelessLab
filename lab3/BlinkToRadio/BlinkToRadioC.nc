@@ -99,14 +99,16 @@ implementation {
 // 大于本身 +1
      if(nodeid > TOS_NODE_ID){   
         aim_node = TOS_NODE_ID + 1; 
-        setLeds(aim_node);
+        setLeds(nodeid);
+        // 定时器仅触发一次
         call Timer0.startOneShot(1000);
      }
 
 // 小于本身 -1
      if(nodeid < TOS_NODE_ID) { 
          aim_node = TOS_NODE_ID - 1;
-         setLeds(aim_node);
+         setLeds(nodeid);
+         // 定时器仅触发一次
          call Timer0.startOneShot(1000);
      }
      
@@ -119,6 +121,7 @@ implementation {
         //  传回去
          aim_node = TOS_NODE_ID -1;
          setLeds(counter);
+         // 定时器仅触发一次
          call Timer0.startOneShot(3000);
      }
     }

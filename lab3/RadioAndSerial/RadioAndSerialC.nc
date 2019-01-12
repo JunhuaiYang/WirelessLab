@@ -38,9 +38,22 @@ implementation {
   uint16_t nodeid;
   uint16_t aim_node = 1;   
 
+  void setLeds(uint16_t val) {
+    if (val & 0x01)
+      call Leds.led0On();
+    else 
+      call Leds.led0Off();
+    if (val & 0x02)
+      call Leds.led1On();
+    else
+      call Leds.led1Off();
+    if (val & 0x04)
+      call Leds.led2On();
+    else
+      call Leds.led2Off();
+  }
 
 // 无需定时器
-
   event void Boot.booted() {
     call RadioAMControl.start();
     call SerialControl.start();
@@ -94,14 +107,6 @@ implementation {
       BlinkToRadioMsg* btrpkt = (BlinkToRadioMsg*)payload;
       // led2 亮
 
-    // 路由
-    //  目标节点是基站
-     if(nodeid == TOS_NODE_ID)
-      {  
-         counter = counter + TOS_NODE_ID ;
-         nodeid = 1;  
-         setLeds(counter);
-     }
 
       // 转发到串口
       if (locked) {
@@ -117,7 +122,13 @@ implementation {
         if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
             return NULL;
         }
-          rcm->counter = btrpkt->counter;
+
+        // 路由
+        //  目标节点是基站
+          counter = btrpkt->counter + TOS_NODE_ID ;
+          setLeds(counter);
+
+          rcm->counter = counter;
           rcm->nodeid = btrpkt ->nodeid;
           if (call SerialAMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(test_serial_msg_t)) == SUCCESS) {
               // call Leds.led1Toggle();
