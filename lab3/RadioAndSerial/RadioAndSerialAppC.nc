@@ -14,8 +14,8 @@ implementation {
   components SerialActiveMessageC as AM;
 
   // 计时器 test
-  components new TimerMilliC();
-  App.MilliTimer -> TimerMilliC;
+  // components new TimerMilliC();
+  // App.MilliTimer -> TimerMilliC;
 
   App.Boot -> MainC.Boot;
   App.Leds -> LedsC;

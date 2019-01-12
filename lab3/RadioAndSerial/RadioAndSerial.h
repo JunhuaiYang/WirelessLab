@@ -10,7 +10,7 @@
 
 enum {
   AM_BLINKTORADIO = 6,
-  TIMER_PERIOD_MILLI = 250
+  TIMER_PERIOD_MILLI = 1000
 };
 
 enum {
@@ -24,7 +24,7 @@ typedef nx_struct BlinkToRadioMsg {
 
 typedef nx_struct test_serial_msg {
   nx_uint16_t counter;
-  nx_uint16_t tar_nodeid;
+  nx_uint16_t nodeid;
 } test_serial_msg_t;
 
 #endif // __RADIOANDSERIAL_h__

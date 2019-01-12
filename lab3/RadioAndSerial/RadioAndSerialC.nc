@@ -1,4 +1,10 @@
-
+/***********************************************************************
+ * @file RadioAndSerialC.nc
+     RADIOANDSERIALC
+ * @brief   sources file
+ *
+ * @Copyright (C)  2019  YangJunhuai. all right reserved
+***********************************************************************/
 #include <Timer.h>
 #include "RadioAndSerial.h"
 
@@ -18,39 +24,22 @@ module RadioAndSerialC {
   uses interface SplitControl as SerialControl;
 
   // test
-  uses interface Timer<TMilli> as MilliTimer;
+  // uses interface Timer<TMilli> as MilliTimer;
 }
 implementation {
 
   message_t packet;
+  message_t pkt;
 
   bool locked = FALSE;
-  uint16_t counter = 0;
-
-  message_t pkt;
   bool busy = FALSE;
 
-  
-  
-  event void MilliTimer.fired() {
-    counter++;
-    if (locked) {
-      return;
-    }
-    else {
-      test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&packet, sizeof(test_serial_msg_t));
-      if (rcm == NULL) {return;}
-      if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
-	return;
-      }
+  uint16_t counter = 0;
+  uint16_t nodeid;
+  uint16_t aim_node = 1;   
 
-      rcm->counter = counter;
-      if (call SerialAMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(test_serial_msg_t)) == SUCCESS) {
-	locked = TRUE;
-      }
-    }
-  }
 
+// 无需定时器
 
   event void Boot.booted() {
     call RadioAMControl.start();
@@ -92,8 +81,8 @@ implementation {
 
 // 串口发送完成
   event void SerialAMSend.sendDone(message_t* bufPtr, error_t error) {
-        call Leds.led1Toggle();
     if (&packet == bufPtr) {
+        // call Leds.led1Toggle();
         locked = FALSE;
     }
   }
@@ -104,10 +93,17 @@ implementation {
     if (len == sizeof(BlinkToRadioMsg)) {
       BlinkToRadioMsg* btrpkt = (BlinkToRadioMsg*)payload;
       // led2 亮
-    call Leds.led2Toggle();
+
+    // 路由
+    //  目标节点是基站
+     if(nodeid == TOS_NODE_ID)
+      {  
+         counter = counter + TOS_NODE_ID ;
+         nodeid = 1;  
+         setLeds(counter);
+     }
 
       // 转发到串口
-
       if (locked) {
         return NULL;
       }
@@ -121,15 +117,16 @@ implementation {
         if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
             return NULL;
         }
-        rcm->counter = btrpkt->counter;
-        if (call SerialAMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(test_serial_msg_t)) == SUCCESS) {
-            // call Leds.led1Toggle();
-            locked = TRUE;
+          rcm->counter = btrpkt->counter;
+          rcm->nodeid = btrpkt ->nodeid;
+          if (call SerialAMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(test_serial_msg_t)) == SUCCESS) {
+              // call Leds.led1Toggle();
+              locked = TRUE;
+          }
         }
       }
+      return msg;
     }
-    return msg;
-  }
 
   // 串口收到数据
     event message_t* SerialReceive.receive(message_t* bufPtr, void* payload, uint8_t len) 
@@ -151,9 +148,12 @@ implementation {
             {
                 return NULL;
             }
-            btrpkt->nodeid = TOS_NODE_ID;
+            btrpkt->nodeid = rcm->nodeid;
             btrpkt->counter = rcm->counter;
-            if (call RadioAMSend.send(AM_BROADCAST_ADDR, &pkt, sizeof(BlinkToRadioMsg)) == SUCCESS) 
+            // 基站自身节点+1
+            aim_node = TOS_NODE_ID +1;
+            // 单播发送
+            if (call RadioAMSend.send(aim_node, &pkt, sizeof(BlinkToRadioMsg)) == SUCCESS) 
             {
                 busy = TRUE;
             }

@@ -3,6 +3,7 @@ import java.io.IOException;
 import net.tinyos.message.*;
 import net.tinyos.packet.*;
 import net.tinyos.util.*;
+import java.util.Scanner;
 
 public class RadioAndSerial implements MessageListener {
 
@@ -35,33 +36,36 @@ public class RadioAndSerial implements MessageListener {
   }
 
 // 输入发送内容
-  public void SendMyPacket()
+  public void SendIDPacket()
   {
-    BlinkToRadioMsg payload = new BlinkToRadioMsg();
+    int counter = 0;
+    RadioAndSerialMsg payload = new RadioAndSerialMsg();
 		Scanner in = new Scanner(System.in);
 
-		try {
-			while(true) {
-				System.out.println("请输入需要发送的内容： ");
-				if(in.hasNextInt()){
-					counter = in.nextInt();				
-				}
-        System.out.println("Sending packet " + counter);
-				payload.set_counter(counter);
-				moteIF.send(0, payload);
-				try {
-					Thread.sleep(1000);
-				}catch(InterruptedException exception){}
-			}
-		}catch(IOException exception){
-			System.err.println("Exception thrown when sending packets. Exiting.");
-        	System.err.println(exception);
-		}
+  try {
+        while(true) {
+          System.out.println("请输入需要发送的目标节点和counter：（如 3 1） ");
+          if(in.hasNextInt()){
+            nodeid = in.nextInt();
+            if(nodeid == 0) break;	
+            counter = in.nextInt();				
+          }
+          System.out.println("Sending to " + nodeid + " number is : " + counter);
+          payload.set_counter(counter);
+          payload.set_nodeid(nodeid);
+          moteIF.send(0, payload);
+        }
+      }catch(IOException exception){
+        System.err.println("Exception thrown when sending packets. Exiting.");
+            System.err.println(exception);
+      }
 	}
 
   public void messageReceived(int to, Message message) {
     RadioAndSerialMsg msg = (RadioAndSerialMsg)message;
-    System.out.println("Received packet sequence number " + msg.get_counter());
+    System.out.println("Received packet to: " + to + "  nodeid: " + msg.get_nodeid() + "  counter: " + msg.get_counter());
+    // 收到消息后可继续发送
+    this.SendIDPacket();
   }
   
   private static void usage() {
@@ -93,14 +97,10 @@ public class RadioAndSerial implements MessageListener {
 
     MoteIF mif = new MoteIF(phoenix);
     RadioAndSerial serial = new RadioAndSerial(mif);
+    Scanner in = new Scanner(System.in);
 
-    System.out.println("请输入需要进入的模式：");
-    System.out.println("1. 自动发送自增数据");
-    System.out.println("2. 手动输入数据发送");
-    if(in.hasNextInt() == 2)
-      serial.SendMyPacket();
-    else
-    serial.sendPackets();
+
+    serial.SendIDPacket();
   }
 
 

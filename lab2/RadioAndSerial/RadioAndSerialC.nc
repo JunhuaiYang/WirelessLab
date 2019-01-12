@@ -1,4 +1,10 @@
-
+/***********************************************************************
+ * @file RadioAndSerialC.nc
+     RADIOANDSERIALC
+ * @brief   sources file
+ *
+ * @Copyright (C)  2019  YangJunhuai. all right reserved
+***********************************************************************/
 #include <Timer.h>
 #include "RadioAndSerial.h"
 
@@ -23,34 +29,14 @@ module RadioAndSerialC {
 implementation {
 
   message_t packet;
+  message_t pkt;
 
   bool locked = FALSE;
-  uint16_t counter = 0;
-
-  message_t pkt;
   bool busy = FALSE;
 
-  
-  
-  // event void MilliTimer.fired() {
-  //   counter++;
-  //   if (locked) {
-  //     return;
-  //   }
-  //   else {
-  //     test_serial_msg_t* rcm = (test_serial_msg_t*)call SerialPacket.getPayload(&packet, sizeof(test_serial_msg_t));
-  //     if (rcm == NULL) {return;}
-  //     if (call SerialPacket.maxPayloadLength() < sizeof(test_serial_msg_t)) {
-	// return;
-  //     }
+  uint16_t counter = 0;
 
-  //     rcm->counter = counter;
-  //     if (call SerialAMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(test_serial_msg_t)) == SUCCESS) {
-	// locked = TRUE;
-  //     }
-  //   }
-  // }
-
+// 无需定时器
 
   event void Boot.booted() {
     call RadioAMControl.start();
